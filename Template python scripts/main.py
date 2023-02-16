@@ -1,11 +1,11 @@
-import buffer_test
+import Connection
 def main():
 
     
     
     fullBuffer = b"A" * 2000
     connectionSettings = [fullBuffer]
-    buf = buffer_test.Buffer("127.0.0.1", 80, connectionSettings, len(connectionSettings))
-    buf.connect()
+    buf = Connection.Connection("127.0.0.1", 80, connectionSettings, len(connectionSettings))
+    buf.sendBuffer()
 if __name__ == '__main__':
     main()
