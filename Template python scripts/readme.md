@@ -1,1 +1,1 @@
-This is just template files for stack overflows/SEH overflows
+This is just clean template files for stack overflows/SEH overflows
