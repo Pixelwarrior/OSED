@@ -1,35 +1,31 @@
 import socket
 import logging
-from datetime import datetime
 import sys
+from time import sleep
 
-# Global variables
-dt = datetime.now()
-logging.basicConfig(format='%(message)s', level=logging.DEBUG)
-
-
+logging.basicConfig(level=logging.INFO)
 
 class Connection:
-    def __init__(self, ip, port, buffer):
+    def __init__(self, ip: str, port: int, buffer_data: bytes):
         self.ip = ip
         self.port = port
-        self.buffer = buffer
+        self.buffer_data = buffer_data
     def sendBuffer(self):
+        print(f"[+] Buffer: ", str(self.buffer_data))
         try:
-            print("[+] Attempting to send buffer... ")
-            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            s.connect((self.ip, self.port))
-            print("[+] Connected to: {self.ip}")
-            if len(self.buffer) > 0:
-                for i in self.buffer:
-                    print("[DEBUG] ", str(i))
-                    s.send(i)
-            else:
-                print("[-] Buffer contained no information.")
-                sys.exit()
-            s.close()
-            print("Buffer sent successfully")
-        except socket.error as e:
-            logging.info(str(dt) + " - Error: ", str(e))
+            with socket.create_connection((self.ip, self.port), timeout=10) as sock:
+                logging.info(f"[+] Attempting to send buffer")
+                sock.send(self.buffer_data)
+                recv = sock.recv(1024)
+                print(recv)
+                sleep(1)
+                logging.info(f"[+] Buffer sent!")
+        except TimeoutError:
+            logging.info(f"Connection to {self.ip} timed out")
+        except ConnectionRefusedError:
+            logging.info(f"Connection to {self.ip} refused")
+        except Exception as e:
+            logging.info(f"Error: ", str(e))
 
 
+            
